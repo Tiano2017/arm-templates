@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "name": "location-lock",
+      "apiVersion": "2016-12-01",
+      "dependsOn": [
+        "policy2"
+      ],
+      "properties": {
+        "scope": "[reference(nested01).outputs.scope]",
+        "policyDefinitionId": "[resourceId('Microsoft.Authorization/policyDefinitions', 'policy2')]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "nested01",
+      "apiVersion": "2018-05-10",
+      "location": "East US 2 EUAP",
+      "properties": {
+        "templateLink": "aa",
+        "mode":"Incremental"
+      }
+    }
+  ]
+}
