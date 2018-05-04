@@ -9,21 +9,20 @@
       "type": "Microsoft.Authorization/policyAssignments",
       "name": "location-lock",
       "apiVersion": "2016-12-01",
-      "dependsOn": [
-        "policy2"
-      ],
       "properties": {
-        "scope": "[reference(nested01).outputs.scope]",
+        "scope": "[reference('nested01', '2018-05-01').outputs.scope.value]",
         "policyDefinitionId": "[resourceId('Microsoft.Authorization/policyDefinitions', 'policy2')]"
       }
     },
     {
       "type": "Microsoft.Resources/deployments",
       "name": "nested01",
-      "apiVersion": "2018-05-10",
+      "apiVersion": "2018-05-01",
       "location": "East US 2 EUAP",
       "properties": {
-        "templateLink": "aa",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/Tiano2017/arm-templates/master/self-reference/nested.json"
+        },
         "mode":"Incremental"
       }
     }
