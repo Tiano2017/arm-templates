@@ -1,0 +1,103 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "principalId": {
+      "type": "string",
+      "defaultValue": "210bc647-76a4-432a-8d45-ff722db97e6a"
+    },
+    "roleAssignmentName": {
+      "type": "string",
+      "defaultValue": "2df025fa-da56-42d0-88ef-e4d62f803fe4"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "tianosatest110"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/policyDefinitions",
+      "name": "policy2",
+      "apiVersion": "2016-12-01",
+      "properties": {
+        "policyType": "Custom",
+        "parameters": {},
+        "policyRule": {
+          "if": {
+            "field": "location",
+            "equals": "northeurope"
+          },
+          "then": {
+            "effect": "deny"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/policyAssignments",
+      "name": "location-lock",
+      "apiVersion": "2016-12-01",
+      "dependsOn": [
+        "policy2"
+      ],
+      "properties": {
+        "scope": "[subscription().id]",
+        "policyDefinitionId": "[resourceId('Microsoft.Authorization/policyDefinitions', 'policy2')]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "nested01",
+      "apiVersion": "2018-05-01",
+      "location": "East US 2 EUAP",
+      "properties": {
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "name": "[parameters('roleAssignmentName')]",
+              "apiVersion": "2017-05-01",
+              "properties": {
+                "roleDefinitionId": "/subscriptions/fb3a3d6b-44c8-44f5-88c9-b20917c9b96b/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab",
+                "principalId": "[parameters('principalId')]"
+              }
+            }
+          ]
+        },
+        "mode":"Incremental"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "rg-nested",
+      "apiVersion": "2017-05-10",
+      "resourceGroup": "demo-rg",
+      "properties": {
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "name": "[parameters('storageAccountName')]",
+              "apiVersion": "2015-06-15",
+              "location": "East US",
+              "properties": {
+                "accountType": "Standard_LRS"
+              }
+            }
+          ]
+        },
+        "mode":"Incremental"
+      }
+    }
+  ]
+}
