@@ -4,15 +4,15 @@
   "parameters": {
     "principalId": {
       "type": "string",
-      "defaultValue": "210bc647-76a4-432a-8d45-ff722db97e6a"
+      "defaultValue": "3da6ea3e-6e90-4f8d-998c-19906865a871"
     },
     "roleAssignmentName": {
       "type": "string",
-      "defaultValue": "2df025fa-da56-42d0-88ef-e4d62f803fe4"
+      "defaultValue": "6e34ec44-4c26-48ab-adf7-67cbbf3fc11a"
     },
     "storageAccountName": {
       "type": "string",
-      "defaultValue": "tianosatest110"
+      "defaultValue": "armbuilddemo1801"
     }
   },
   "variables": {},
